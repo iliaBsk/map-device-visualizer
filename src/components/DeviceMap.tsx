@@ -53,6 +53,22 @@ const DeviceMap: React.FC<DeviceMapProps> = ({
       }, {} as Record<string, HistoricalPosition[]>)
     : {};
 
+  // Get color for a sensor based on its colorIndex
+  const getSensorColor = (colorIndex: number = 1) => {
+    const colors = {
+      1: 'rgb(139, 92, 246)', // sensor-1 (#8B5CF6)
+      2: 'rgb(217, 70, 239)', // sensor-2 (#D946EF)
+      3: 'rgb(249, 115, 22)', // sensor-3 (#F97316)
+      4: 'rgb(6, 182, 212)',  // sensor-4 (#06B6D4)
+      5: 'rgb(34, 197, 94)',  // sensor-5 (#22C55E)
+      6: 'rgb(234, 179, 8)',  // sensor-6 (#EAB308)
+      7: 'rgb(236, 72, 153)', // sensor-7 (#EC4899)
+      8: 'rgb(20, 184, 166)', // sensor-8 (#14B8A6)
+    };
+    
+    return colors[colorIndex as keyof typeof colors] || colors[1];
+  };
+
   return (
     <div 
       ref={mapRef} 
@@ -82,7 +98,7 @@ const DeviceMap: React.FC<DeviceMapProps> = ({
             height: device.type === "anchor" ? "20px" : "16px",
             backgroundColor: device.type === "anchor" 
               ? "rgb(30, 174, 219)" 
-              : `var(--tw-color-sensor-${device.colorIndex})`,
+              : getSensorColor(device.colorIndex),
             borderRadius: device.type === "anchor" ? "2px" : "50%",
             border: "2px solid white",
             boxShadow: "0 0 0 1px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.2)",
@@ -122,7 +138,7 @@ const DeviceMap: React.FC<DeviceMapProps> = ({
                 fill="none"
                 stroke={device.type === "anchor" 
                   ? "rgb(30, 174, 219)" 
-                  : `var(--tw-color-sensor-${device.colorIndex})`}
+                  : getSensorColor(device.colorIndex)}
                 strokeWidth="2"
                 strokeOpacity="0.6"
                 strokeLinecap="round"
@@ -144,7 +160,7 @@ const DeviceMap: React.FC<DeviceMapProps> = ({
                   height: index === sortedPositions.length - 1 ? "12px" : "8px",
                   backgroundColor: device.type === "anchor" 
                     ? "rgb(30, 174, 219)" 
-                    : `var(--tw-color-sensor-${device.colorIndex})`,
+                    : getSensorColor(device.colorIndex),
                   borderRadius: device.type === "anchor" ? "2px" : "50%",
                   border: index === sortedPositions.length - 1 ? "2px solid white" : "none",
                   opacity: 0.7,
@@ -162,9 +178,19 @@ const DeviceMap: React.FC<DeviceMapProps> = ({
           <div className="w-3 h-3 bg-anchor rounded-sm mr-2"></div>
           <span>Anchor</span>
         </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 rounded-full bg-sensor-1 mr-2"></div>
-          <span>Sensor</span>
+        <div className="flex flex-col gap-1 mt-1">
+          <span className="text-xs font-medium">Sensors:</span>
+          <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((index) => (
+              <div key={index} className="flex items-center">
+                <div 
+                  className="w-3 h-3 rounded-full mr-1"
+                  style={{ backgroundColor: getSensorColor(index) }}
+                ></div>
+                <span className="text-xs">Sensor {index}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
